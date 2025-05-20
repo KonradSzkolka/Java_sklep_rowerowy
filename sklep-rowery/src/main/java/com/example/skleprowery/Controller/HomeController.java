@@ -1,7 +1,10 @@
 package com.example.skleprowery.Controller;
 
+import com.example.skleprowery.Cart;
+import com.example.skleprowery.CartItem;
 import com.example.skleprowery.Model.Item;
 import com.example.skleprowery.repository.ItemRepository;
+import jakarta.persistence.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,28 +22,29 @@ import java.util.Optional;
 @Controller
 public class HomeController {
 
+
     private final ItemRepository itemRepository;
+    private final Cart cart;
 
     @Autowired
-    public HomeController(ItemRepository itemRepository) {
+    public HomeController(ItemRepository itemRepository, Cart cart) {
         this.itemRepository = itemRepository;
+        this.cart = cart;
     }
 
     @GetMapping("/")
     public String home(Model model) {
-        //List<Item> items = itemRepository.findAll();
         model.addAttribute("items", itemRepository.findAll());
+        model.addAttribute("cart", cart); // aby mieć dostęp do cart.counter i cart.totalPrice w widoku
         return "home";
     }
+
     @GetMapping("/add/{itemId}")
-    public String addItemToCart(@PathVariable("itemId") Long itemId, HttpSession session) {
-        List<Item> cart = (List<Item>) session.getAttribute("cart");
-        if (cart == null) {
-            cart = new ArrayList<>();
+    public String addItemToCart(@PathVariable("itemId") Long itemId) {
+        Item item = itemRepository.findById(itemId).orElse(null);
+        if (item != null) {
+            cart.addItem(item);
         }
-        Optional<Item> oItem = itemRepository.findById(itemId);
-        oItem.ifPresent(cart::add);
-        session.setAttribute("cart", cart);
         return "redirect:/";
     }
 }

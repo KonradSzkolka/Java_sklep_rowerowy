@@ -15,19 +15,12 @@ import java.util.List;
 @NoArgsConstructor
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-@Entity
 
 public class Cart {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<CartItem> cartItems = new ArrayList<>();
-
     private int totalItems = 0;
-    private double totalPrice = 0.00;
+    private double totalPrice = 0.0;
 
     public void addItem(Item item) {
         CartItem cartItem = findOrCreateCartItem(item);
@@ -49,7 +42,7 @@ public class Cart {
     private CartItem findOrCreateCartItem(Item item) {
         CartItem cartItem = findCartItem(item);
         if (cartItem == null) {
-            cartItem = new CartItem(item, this);
+            cartItem = new CartItem(item);
             cartItems.add(cartItem);
         }
         return cartItem;

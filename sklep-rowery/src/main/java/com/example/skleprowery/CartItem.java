@@ -11,28 +11,14 @@ import java.util.List;
 
 
 @Getter
-@NoArgsConstructor
-@Entity
 public class CartItem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
-
-    @OneToOne
-    @JoinColumn(name = "item_id")
-    private Item item;
-
+    private final Item item;
     private int counter;
     private double price;
 
-    public CartItem(Item item, Cart cart) {
+    public CartItem(Item item) {
         this.item = item;
-        this.cart = cart;
         this.counter = 0;
         this.price = item.getPrice().doubleValue();
     }

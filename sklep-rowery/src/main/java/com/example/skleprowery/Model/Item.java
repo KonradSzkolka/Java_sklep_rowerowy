@@ -22,12 +22,12 @@ public class Item {
     @Id
     @GeneratedValue
     private Long id;
-    private String imgURL;
+    private String imgUrl;
     private BigDecimal price;
     private String name;
 
     public Item(String imgURL, BigDecimal price, String name) {
-        this.imgURL = imgURL;
+        this.imgUrl = imgURL;
         this.price = price;
         this.name = name;
     }

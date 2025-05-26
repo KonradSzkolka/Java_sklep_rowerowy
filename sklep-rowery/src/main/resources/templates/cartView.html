@@ -15,6 +15,7 @@
         <table cellspacing="0">
             <tr>
                 <th>No.</th>
+                <th>Zdjęcie</th>
                 <th>Nazwa</th>
                 <th>Cena</th>
                 <th>Ilość</th>
@@ -22,6 +23,9 @@
             </tr>
             <tr th:each="cartItem, iterStat : ${cart.cartItems}">
                 <td th:text="${iterStat.index + 1}"></td>
+                <td>
+                    <img th:src="${cartItem.item.imgUrl}" alt="Zdjęcie produktu" style="width: 50px; height: 50px;">
+                </td>
                 <td th:text="${cartItem.item.name}"></td>
                 <td th:text="${cartItem.item.price} + ' zł'"></td>
                 <td th:text="${cartItem.counter}"></td>

@@ -7,13 +7,15 @@
 <body>
 <header th:fragment="shopHeader">
     <span class="title">MyShop</span>
-
-    <a href="#" class="cart-ico">
+    <a th:href="@{/order/cart}" class="cart-ico">
         <div>
-            <span>(Koszyk: </span>
-            <span th:text="${cart.totalItems}">0</span>
-            <span>)</span>
-            <span th:text="${cart.totalPrice}">0.00</span>
+        <span th:if="${cart != null}">
+            (Koszyk: <span th:text="${cart.totalItems}">0</span>)
+        </span>
+            <span th:if="${cart == null}">
+            (Koszyk: 0)
+        </span>
+            <span th:if="${cart != null}" th:text="${cart.totalPrice}">0.00</span>
             <span>zł</span>
         </div>
     </a>

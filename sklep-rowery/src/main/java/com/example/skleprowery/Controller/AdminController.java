@@ -11,20 +11,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+
     private final ItemRepository itemRepository;
 
     @Autowired
     public AdminController(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
+        this.itemRepository=itemRepository;
     }
     @GetMapping
-    private String adminPage() {
+    private String adminPage(){
         return "adminview/addItem";
     }
     @PostMapping
     private String addItem(Item item) {
+        //HomeController.items.add(Item);
         itemRepository.save(item);
-        //HomeController.items.add(item);
         return "redirect:/";
     }
+
 }

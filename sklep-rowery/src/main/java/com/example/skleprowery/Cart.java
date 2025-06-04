@@ -8,65 +8,64 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-@Getter
-@NoArgsConstructor
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-
 public class Cart {
 
-    private final List<CartItem> cartItems = new ArrayList<>();
-    private int totalItems = 0;
-    private double totalPrice = 0.0;
+    @Getter
+    private List<CartItem> cartItems = new ArrayList<>();
+
+    @Getter
+    private int counter = 0;
+
+    @Getter
+    private BigDecimal sum = BigDecimal.ZERO;
 
     public void addItem(Item item) {
-        CartItem cartItem = findOrCreateCartItem(item);
-        cartItem.increaseCounter();
+        getCartItemByItem(item).ifPresentOrElse(
+                CartItem::increaseCounter,
+                () -> cartItems.add(new CartItem(item))
+        );
         recalculatePriceAndCounter();
     }
 
-    public void removeItem(Item item) {
-        CartItem cartItem = findCartItem(item);
-        if (cartItem != null) {
+    public void decreaseItem(Item item) {
+        Optional<CartItem> oCartItem = getCartItemByItem(item);
+        oCartItem.ifPresent(cartItem -> {
             cartItem.decreaseCounter();
             if (cartItem.hasZeroItems()) {
-                cartItems.remove(cartItem);
+                removeCartItem(cartItem);
             }
-            recalculatePriceAndCounter();
-        }
+        });
+        recalculatePriceAndCounter();
     }
 
-    private CartItem findOrCreateCartItem(Item item) {
-        CartItem cartItem = findCartItem(item);
-        if (cartItem == null) {
-            cartItem = new CartItem(item);
-            cartItems.add(cartItem);
-        }
-        return cartItem;
+    public void removeAllItems(Item item) {
+        getCartItemByItem(item).ifPresent(this::removeCartItem);
+        recalculatePriceAndCounter();
     }
 
-    private CartItem findCartItem(Item item) {
-        for (CartItem ci : cartItems) {
-            if (ci.getItem().getId().equals(item.getId())) {
-                return ci;
-            }
-        }
-        return null;
+    private void removeCartItem(CartItem cartItem) {
+        cartItems.remove(cartItem);
+    }
+
+    private Optional<CartItem> getCartItemByItem(Item item) {
+        return cartItems.stream()
+                .filter(ci -> ci.isEquals(item))
+                .findFirst();
     }
 
     private void recalculatePriceAndCounter() {
-        int counter = 0;
-        double price = 0.0;
-
-        for (CartItem cartItem : cartItems) {
-            counter += cartItem.getCounter();
-            price += cartItem.getPrice();
-        }
-
-        this.totalItems = counter;
-        this.totalPrice = price;
+        this.counter = cartItems.stream()
+                .mapToInt(CartItem::getCounter)
+                .sum();
+        this.sum = cartItems.stream()
+                .map(CartItem::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

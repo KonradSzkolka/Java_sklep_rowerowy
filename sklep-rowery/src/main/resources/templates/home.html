@@ -4,23 +4,25 @@
     <meta charset="UTF-8">
     <title>MyShop</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
 </head>
 <body>
-<header th:replace="fragments/header :: shopHeader"></header>
+<header th:replace="fragments/header :: ShopHeader"></header>
 
 <div class="main-content">
     <div class="item" th:each="item : ${items}">
-        <p class="item-name" th:text="${item.name}"></p>
+        <p class="item-name" th:text="${item.name}">
 
-        <img th:src="${item.imgUrl}" alt="Zdjęcie produktu">
+        </p>
+
+        <img th:src="@{${item.imgURL}}">
 
         <div>
             <span>Cena: </span>
-            <span th:text="${item.price}"></span>
+            <span th:text="${item.price}">2.50 </span>
             <span>zł</span>
         </div>
-
-        <a th:href="@{'/add/'+${item.id}}" class="add-btn">Dodaj do koszyka</a>
+        <a th:href="@{'/add/' + ${item.id}}" class="add-btn">Dodaj do koszyka</a>
     </div>
 </div>
 </body>

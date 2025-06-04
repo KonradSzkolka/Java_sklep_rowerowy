@@ -1,41 +1,46 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>MyShop</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body>
-<header th:replace="fragments/header :: shopHeader"></header>
+<header th:replace="fragments/header :: ShopHeader"></header>
 
 <div class="main-content">
-
     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-
         <table cellspacing="0">
             <tr>
-                <th>No.</th>
-                <th>Zdjęcie</th>
+                <th style="width: 30px;">No.</th>
+                <th style="width: 50px;"></th>
                 <th>Nazwa</th>
-                <th>Cena</th>
                 <th>Ilość</th>
                 <th>Suma</th>
+                <th style="width: 30px;"></th>
             </tr>
-            <tr th:each="cartItem, iterStat : ${cart.cartItems}">
-                <td th:text="${iterStat.index + 1}"></td>
+            <tr th:each="cartItem, iterStat : ${@cart.cartItems}">
+                <td th:text="${iterStat.count}"></td>
                 <td>
-                    <img th:src="${cartItem.item.imgUrl}" alt="Zdjęcie produktu" style="width: 50px; height: 50px;">
+                    <img th:src="@{${cartItem.item.imgURL}}">
                 </td>
                 <td th:text="${cartItem.item.name}"></td>
-                <td th:text="${cartItem.item.price} + ' zł'"></td>
-                <td th:text="${cartItem.counter}"></td>
-                <td th:text="${cartItem.price} + ' zł'"></td>
+                <td style="display: flex; padding-top: 10px; align-items: center;">
+                    <a class="mbtn" th:href="@{'/order/decrease/' + ${cartItem.item.id}}">-</a>
+                    <p th:text="${cartItem.counter}" style="margin: 0 8px;"></p>
+                    <a class="mbtn" th:href="@{'/order/increase/' + ${cartItem.item.id}}">+</a>
+                </td>
+                <td th:text="${cartItem.price}"></td>
+                <td>
+                    <a class="mbtn" th:href="@{'/order/remove/' + ${cartItem.item.id}}">X</a>
+                </td>
             </tr>
         </table>
 
         <div class="summary">
-            <p><span>Do zapłaty: </span><span th:text="${cart.totalPrice}"></span><span> zł</span></p>
+            <p><span>Do zapłaty</span> <span th:text="${@cart.sum}"></span> zł</p>
         </div>
+        <a th:href="@{/order/summary}" class="add-btn">Dalej</a>
     </div>
 </div>
 </body>

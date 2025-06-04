@@ -13,22 +13,22 @@ import java.math.BigDecimal;
 
 
 @NoArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
 public class Item {
-
     @Id
     @GeneratedValue
     private Long id;
-    private String imgUrl;
-    private BigDecimal price;
     private String name;
+    private BigDecimal price;
+    private String imgURL;
 
-    public Item(String imgURL, BigDecimal price, String name) {
-        this.imgUrl = imgURL;
-        this.price = price;
+    public Item(String name, BigDecimal price, String imgURL) {
         this.name = name;
+        this.price = price;
+        this.imgURL = imgURL;
     }
 }
+

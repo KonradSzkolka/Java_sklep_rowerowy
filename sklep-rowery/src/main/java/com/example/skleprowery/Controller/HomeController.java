@@ -31,6 +31,6 @@ public class HomeController {
         model.addAttribute("items", cartService.getAllItems());
         model.addAttribute("cartCounter", cartService.cart.getCounter());
         model.addAttribute("cartSum", cartService.cart.getSum());
-        return "home";
+        return "redirect:/";
     }
 }

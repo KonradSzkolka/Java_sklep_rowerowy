@@ -1,6 +1,6 @@
 package com.example.skleprowery.Controller;
 
-import Dto.OrderDto;
+import com.example.skleprowery.Dto.OrderDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +30,7 @@ public class OrderController {
     public String increaseItem(@PathVariable("itemId") Long itemId, Model model) {
         cartService.itemOperation(itemId, CartService.ItemOperation.INCREASE);
         model.addAttribute("items", cartService.getAllItems());
-        return "cartView";
+        return "redirect:/order/cart";
     }
 
     @GetMapping("/decrease/{itemId}")
@@ -55,6 +55,13 @@ public class OrderController {
     @PostMapping("/summary")
     public String processSummaryForm(OrderDto orderDto) {
         cartService.cart.getCartItems().clear();
+        return "redirect:/";
+    }
+
+    @PostMapping("/saveorder")
+    public String saveOrder(OrderDto orderDto) {
+        System.out.println(orderDto.getFirstName());
+        System.out.println("hello");
         return "redirect:/";
     }
 }

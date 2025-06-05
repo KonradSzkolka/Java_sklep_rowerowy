@@ -1,4 +1,4 @@
-package Dto;
+package com.example.skleprowery.Dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

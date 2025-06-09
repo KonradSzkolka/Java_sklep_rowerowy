@@ -1,13 +1,11 @@
 package com.example.skleprowery.Controller;
 
 import com.example.skleprowery.Dto.OrderDto;
+import com.example.skleprowery.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import com.example.skleprowery.service.CartService;
 
 @Controller
@@ -15,53 +13,49 @@ import com.example.skleprowery.service.CartService;
 public class OrderController {
 
     private final CartService cartService;
+    private final OrderService orderService;
 
     @Autowired
-    public OrderController(CartService cartService) {
+    public OrderController(CartService cartService, OrderService orderService) {
         this.cartService = cartService;
+        this.orderService = orderService;
     }
 
     @GetMapping("/cart")
-    public String showCart() {
+    public String showCart(Model model) {
+        // Przekazujemy obiekt cart do widoku
+        model.addAttribute("cart", cartService.cart);
         return "cartView";
     }
 
     @GetMapping("/increase/{itemId}")
-    public String increaseItem(@PathVariable("itemId") Long itemId, Model model) {
+    public String increaseItem(@PathVariable("itemId") Long itemId) {
         cartService.itemOperation(itemId, CartService.ItemOperation.INCREASE);
-        model.addAttribute("items", cartService.getAllItems());
         return "redirect:/order/cart";
     }
 
     @GetMapping("/decrease/{itemId}")
-    public String decreaseItem(@PathVariable("itemId") Long itemId, Model model) {
+    public String decreaseItem(@PathVariable("itemId") Long itemId) {
         cartService.itemOperation(itemId, CartService.ItemOperation.DECREASE);
-        model.addAttribute("items", cartService.getAllItems());
-        return "cartView";
+        return "redirect:/order/cart";
     }
 
     @GetMapping("/remove/{itemId}")
     public String removeAllOfItem(@PathVariable("itemId") Long itemId) {
         cartService.itemOperation(itemId, CartService.ItemOperation.REMOVE);
-        return "cartView";
+        return "redirect:/order/cart";
     }
 
     @GetMapping("/summary")
     public String showSummary(Model model) {
         model.addAttribute("cart", cartService.cart);
+        model.addAttribute("orderDto", new OrderDto());
         return "summary";
     }
 
-    @PostMapping("/summary")
-    public String processSummaryForm(OrderDto orderDto) {
-        cartService.cart.getCartItems().clear();
-        return "redirect:/";
-    }
-
     @PostMapping("/saveorder")
-    public String saveOrder(OrderDto orderDto) {
-        System.out.println(orderDto.getFirstName());
-        System.out.println("hello");
+    public String saveorder(@ModelAttribute OrderDto orderDto) {
+        orderService.saveOrder(orderDto);
         return "redirect:/";
     }
 }

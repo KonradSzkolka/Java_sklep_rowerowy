@@ -68,4 +68,11 @@ public class Cart {
                 .map(CartItem::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    // Dodana metoda na potrzeby zadania
+    public void clearCart() {
+        cartItems.clear();
+        counter = 0;
+        sum = BigDecimal.ZERO;
+    }
 }

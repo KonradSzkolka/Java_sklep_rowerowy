@@ -1,32 +1,25 @@
 package com.example.skleprowery.Controller;
 
-import com.example.skleprowery.Model.Item;
-import com.example.skleprowery.repository.ItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.skleprowery.Model.order.Order;
+import com.example.skleprowery.repository.Order.OrderRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
-@RequestMapping("/admin")
 public class AdminController {
 
-    private final ItemRepository itemRepository;
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    public AdminController(ItemRepository itemRepository) {
-        this.itemRepository=itemRepository;
-    }
-    @GetMapping
-    private String adminPage(){
-        return "adminview/addItem";
-    }
-    @PostMapping
-    private String addItem(Item item) {
-        //HomeController.items.add(Item);
-        itemRepository.save(item);
-        return "redirect:/";
+    public AdminController(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
     }
 
+    @GetMapping("/admin/orders")
+    @ResponseBody
+    public List<Order> showOrders() {
+        return orderRepository.findAll();
+    }
 }

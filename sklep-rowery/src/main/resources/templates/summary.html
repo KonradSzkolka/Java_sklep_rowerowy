@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>MyShop</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
 </head>
 <body>
 <header th:replace="fragments/header :: ShopHeader"></header>
@@ -36,7 +37,7 @@
     </div>
 
     <h3>Dane do wysyłki</h3>
-    <form method="post" th:action="@{/order/saveorder}">
+    <form th:action="@{/order/saveorder}" method="post">
         <label>Imię</label>
         <input type="text" name="firstName" required>
         <label>Nazwisko</label>
